@@ -67,5 +67,3 @@ Task 4: Conditions
     •   Search must be case-insensitive
     •   Filter must be case-insensitive
     •   Return appropriate response when data is not found
-    
-    
