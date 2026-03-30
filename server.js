@@ -46,11 +46,12 @@ app.get("/courses", (req, res) => {
 // Named Route Parameter - ":id" -- Read as a string
 app.get("/courses/:id", (req, res) => {
   const id = req.params.id;
-  const course = courses.find(ele => ele.id === Number(id));
-  
-  // Error-first syntax (preferred)
-  if (!course) {// course will be "undefined", if not found, so Falsy value 
-    res.status(404).json({ "error": `Course not found with id: ${id}` });
+  const course = courses.find((ele) => ele.id === Number(id));
+
+  // Error-first syntax (preferred) -- Handle error first
+  if (!course) {
+    // course will be "undefined", if not found in data, so Falsy value
+    res.status(404).json({ error: `Course not found with id: ${id}` });
   }
   res.status(200).json(course);
 });
