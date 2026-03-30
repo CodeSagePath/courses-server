@@ -37,11 +37,24 @@ const courses = [
   },
 ];
 
-// Get all courses
+// GET all courses
 app.get("/courses", (req, res) => {
   res.status(200).json(courses);
 });
 
+// GET course by ID
+// Named Route Parameter - ":id" -- Read as a string
+app.get("/courses/:id", (req, res) => {
+  const id = req.params.id;
+  const course = courses.find(ele => ele.id === Number(id));
+  
+  // Error-first syntax (preferred)
+  if (!course) {// course will be "undefined", if not found, so Falsy value 
+    res.status(404).json({ "error": `Course not found with id: ${id}` });
+  }
+  res.status(200).json(course);
+});
+
 app.listen(PORT, HOSTNAME, () => {
-  console.log(`Courses server is up and running at http://127.0.0.1:${PORT}`);
+  console.log(`Courses server is up and running at http://${HOSTNAME}:${PORT}`);
 });
