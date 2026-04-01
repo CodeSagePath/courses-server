@@ -7,17 +7,35 @@ const HOSTNAME = "127.0.0.1";
 
 const courses = [];
 
-// Course Constructor Function
-function Course({title, category, instructor}) {
-  this.id = Date.now(); // Simple ID ==> courses.length + 1
-  this.title = title;
-  this.category = category;
-  this.instructor = instructor;
-  this.createdAt = new Date();
-  
-  this.save = function() {
+/// ES 5 Syntax
+/**
+ Constructor Function - Course
+ function Course({ title, category, instructor }) {
+   this.id = Date.now(); // Simple ID ==> courses.length + 1
+   this.title = title;
+   this.category = category;
+   this.instructor = instructor;
+   this.createdAt = new Date();
+
+   this.save = function () {
+     courses.push(this);
+   };
+ }
+ */
+
+/// ES6 Syntax
+class Course {
+  constructor({ title, category, instructor }) {
+    this.id = Date.now();
+    this.title = title;
+    this.category = category;
+    this.instructor = instructor;
+    this.createdAt = new Date();
+  }
+
+  save() {
     courses.push(this);
-  } 
+  }
 }
 
 // GET all courses
@@ -43,7 +61,7 @@ app.post("/create-course", (req, res) => {
   console.log("Body: \t", req.body); // Request Body
   const course = new Course(req.body);
   course.save();
-  res.status(201).json("Course Created \n" + course);
+  res.status(201).json(course);
 });
 
 app.listen(PORT, HOSTNAME, () => {
