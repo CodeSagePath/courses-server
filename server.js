@@ -74,6 +74,12 @@ class Course {
     return courses.find((ele) => ele.id === Number(id));
   }
 
+  static findAllByTitle(title) {
+    return courses.filter((ele) =>
+      ele.title.toLowerCase().includes(title.toLowerCase()),
+    );
+  }
+
   // // Create can also be done via static "create" method but instance method is preferred.
   // static create({ title, category, instructor }) {
   // }
@@ -82,15 +88,6 @@ class Course {
 // GET all courses
 app.get("/courses", (req, res) => {
   res.status(200).json(courses);
-});
-
-// GET course by search query
-app.get("/courses/search", (req, res) => {
-  const title = req.query.title;
-  const result = courses.filter((ele) =>
-    ele.title.toLowerCase().includes(title.toLowerCase()),
-  );
-  res.status(200).json(result);
 });
 
 // POST a new course
@@ -102,6 +99,13 @@ app.post("/create-course", (req, res) => {
   const course = new Course(req.body);
   course.save();
   res.status(201).json(course);
+});
+
+// GET course by search query
+app.get("/courses/search", (req, res) => {
+  const title = req.query.title;
+  const result = Course.findAllByTitle(title);
+  res.status(200).json(result);
 });
 
 // GET course by ID
