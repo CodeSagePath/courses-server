@@ -1,41 +1,24 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 
 const PORT = 4000;
 const HOSTNAME = "127.0.0.1";
 
-const courses = [
-  // {
-  //   id: 1,
-  //   title: "React Fundamentals",
-  //   category: "Frontend",
-  //   instructor: "Arjun",
-  // },
-  // {
-  //   id: 2,
-  //   title: "Node.js and Express Basics",
-  //   category: "Backend",
-  //   instructor: "Meera",
-  // },
-  // {
-  //   id: 3,
-  //   title: "MongoDB Essentials",
-  //   category: "Database",
-  //   instructor: "Ravi",
-  // },
-  // {
-  //   id: 4,
-  //   title: "Advanced JavaScript Concepts",
-  //   category: "Frontend",
-  //   instructor: "Sneha",
-  // },
-  // {
-  //   id: 5,
-  //   title: "REST API Development with Express",
-  //   category: "Backend",
-  //   instructor: "Kiran",
-  // },
-];
+const courses = [];
+
+// Course Constructor Function
+function Course({title, category, instructor}) {
+  this.id = Date.now(); // Simple ID ==> courses.length + 1
+  this.title = title;
+  this.category = category;
+  this.instructor = instructor;
+  this.createdAt = new Date();
+  
+  this.save = function() {
+    courses.push(this);
+  } 
+}
 
 // GET all courses
 app.get("/courses", (req, res) => {
@@ -54,6 +37,13 @@ app.get("/courses/:id", (req, res) => {
     res.status(404).json({ error: `Course not found with id: ${id}` });
   }
   res.status(200).json(course);
+});
+
+app.post("/create-course", (req, res) => {
+  console.log("Body: \t", req.body); // Request Body
+  const course = new Course(req.body);
+  course.save();
+  res.status(201).json("Course Created \n" + course);
 });
 
 app.listen(PORT, HOSTNAME, () => {
