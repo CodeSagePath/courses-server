@@ -5,7 +5,38 @@ app.use(express.json());
 const PORT = 4000;
 const HOSTNAME = "127.0.0.1";
 
-const courses = [];
+const courses = [
+  {
+    id: 1,
+    title: "React Fundamentals",
+    category: "Frontend",
+    instructor: "Arjun",
+  },
+  {
+    id: 2,
+    title: "Node.js and Express Basics",
+    category: "Backend",
+    instructor: "Meera",
+  },
+  {
+    id: 3,
+    title: "MongoDB Essentials",
+    category: "Database",
+    instructor: "Ravi",
+  },
+  {
+    id: 4,
+    title: "Advanced JavaScript Concepts",
+    category: "Frontend",
+    instructor: "Sneha",
+  },
+  {
+    id: 5,
+    title: "REST API Development with Express",
+    category: "Backend",
+    instructor: "Kiran",
+  },
+];
 
 /// ES 5 Syntax
 /**
@@ -53,6 +84,26 @@ app.get("/courses", (req, res) => {
   res.status(200).json(courses);
 });
 
+// GET course by search query
+app.get("/courses/search", (req, res) => {
+  const title = req.query.title;
+  const result = courses.filter((ele) =>
+    ele.title.toLowerCase().includes(title.toLowerCase()),
+  );
+  res.status(200).json(result);
+});
+
+// POST a new course
+app.post("/create-course", (req, res) => {
+  console.log("Body: \t", req.body); // Request Body
+
+  /// const course = Course.create();
+
+  const course = new Course(req.body);
+  course.save();
+  res.status(201).json(course);
+});
+
 // GET course by ID
 // Named Route Parameter - ":id" -- Read as a string
 app.get("/courses/:id", (req, res) => {
@@ -65,16 +116,6 @@ app.get("/courses/:id", (req, res) => {
     res.status(404).json({ error: `Course not found with id: ${id}` });
   }
   res.status(200).json(course);
-});
-
-app.post("/create-course", (req, res) => {
-  console.log("Body: \t", req.body); // Request Body
-  
-  /// const course = Course.create();
-  
-  const course = new Course(req.body);
-  course.save();
-  res.status(201).json(course);
 });
 
 app.listen(PORT, HOSTNAME, () => {
