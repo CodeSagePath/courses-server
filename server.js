@@ -1,10 +1,17 @@
 const express = require("express");
 const app = express();
+
+// Middleware to parse JSON request bodies
 app.use(express.json());
 
+// Server configuration
 const PORT = 4000;
 const HOSTNAME = "127.0.0.1";
 
+/**
+ * In-memory data store (mock database)
+ * Note: Data will reset when server restarts
+ */
 const courses = [
   {
     id: 1,
@@ -38,90 +45,109 @@ const courses = [
   },
 ];
 
-/// ES 5 Syntax
 /**
- Constructor Function - Course
- function Course({ title, category, instructor }) {
-   this.id = Date.now(); // Simple ID ==> courses.length + 1
-   this.title = title;
-   this.category = category;
-   this.instructor = instructor;
-   this.createdAt = new Date();
-
-   this.save = function () {
-     courses.push(this);
-   };
- }
+ * Course Model (ES6 Class)
+ * Represents a course entity with utility methods
  */
-
-/// ES6 Syntax
 class Course {
   constructor({ title, category, instructor }) {
-    this.id = Date.now();
+    this.id = Date.now(); // Simple unique ID (not ideal for production)
     this.title = title;
     this.category = category;
     this.instructor = instructor;
     this.createdAt = new Date();
   }
 
-  // Instance Method
+  /**
+   * Save course instance to the data store
+   */
   save() {
     courses.push(this);
   }
 
-  // Static Method
+  /**
+   * Find a course by ID
+   * @param {number|string} id
+   * @returns {object|undefined}
+   */
   static findById(id) {
-    return courses.find((ele) => ele.id === Number(id));
+    return courses.find((course) => course.id === Number(id));
   }
 
-  static findAllByTitle(title) {
-    return courses.filter((ele) =>
-      ele.title.toLowerCase().includes(title.toLowerCase()),
+  /**
+   * Search courses by title (case-insensitive)
+   * @param {string} title
+   * @returns {Array}
+   */
+  static findByTitle(title = "") {
+    return courses.filter((course) =>
+      course.title.toLowerCase().includes(title.toLowerCase()),
     );
   }
-
-  // // Create can also be done via static "create" method but instance method is preferred.
-  // static create({ title, category, instructor }) {
-  // }
 }
 
-// GET all courses
+/**
+ * GET /courses
+ * Retrieve all courses
+ */
 app.get("/courses", (req, res) => {
-  res.status(200).json(courses);
+  return res.status(200).json(courses);
 });
 
-// POST a new course
-app.post("/create-course", (req, res) => {
-  console.log("Body: \t", req.body); // Request Body
+/**
+ * POST /courses
+ * Create a new course
+ */
+app.post("/courses", (req, res) => {
+  const { title, category, instructor } = req.body;
 
-  /// const course = Course.create();
+  // Basic validation
+  if (!title || !category || !instructor) {
+    return res.status(400).json({
+      error: "title, category, and instructor are required",
+    });
+  }
 
-  const course = new Course(req.body);
-  course.save();
-  res.status(201).json(course);
+  const newCourse = new Course({ title, category, instructor });
+  newCourse.save();
+
+  return res.status(201).json(newCourse);
 });
 
-// GET course by search query
+/**
+ * GET /courses/search?title=xyz
+ * Search courses by title
+ */
 app.get("/courses/search", (req, res) => {
-  const title = req.query.title;
-  const result = Course.findAllByTitle(title);
-  res.status(200).json(result);
+  const { title = "" } = req.query;
+
+  const results = Course.findByTitle(title);
+
+  return res.status(200).json(results);
 });
 
-// GET course by ID
-// Named Route Parameter - ":id" -- Read as a string
+/**
+ * GET /courses/:id
+ * Retrieve a course by ID
+ */
 app.get("/courses/:id", (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
+
   const course = Course.findById(id);
 
-  // Error-first syntax (preferred) -- Handle error first
+  // Handle not found case
   if (!course) {
-    // course will be "undefined", if not found in data, so Falsy value
-    res.status(404).json({ error: `Course not found with id: ${id}` });
+    return res.status(404).json({
+      error: `Course not found with id: ${id}`,
+    });
   }
-  res.status(200).json(course);
+
+  return res.status(200).json(course);
 });
 
+/**
+ * Start server
+ */
 app.listen(PORT, HOSTNAME, () => {
-  console.log(`Courses server is up and running at http://${HOSTNAME}:${PORT}`);
+  console.log(`Server running at http://${HOSTNAME}:${PORT}`);
 });
