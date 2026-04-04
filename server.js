@@ -1,8 +1,13 @@
 const express = require("express");
 const app = express();
 
+const cors = require("cors");
+
 // Middleware to parse JSON request bodies
 app.use(express.json());
+
+// Middleware/Library to automatically set "Access-Control-Allow-Origin" to wildcard "*".
+app.use(cors());
 
 // Server configuration
 const PORT = 4000;
@@ -91,7 +96,7 @@ class Course {
  * Retrieve all courses
  */
 app.get("/courses", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
+  // res.header("Access-Control-Allow-Origin", "*");
   return res.status(200).json(courses);
 });
 
