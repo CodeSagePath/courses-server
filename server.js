@@ -95,6 +95,50 @@ app.get("/courses", (req, res) => {
   return res.status(200).json(courses);
 });
 
+// GET UI from Backend
+app.get("/ui", (req, res) => { 
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Courses UI</title>
+      </head>
+      <body>
+        <h2>Listing Courses</h2>
+        <button onclick="handleClick()">fetch courses</button>
+        <ul id="list"></ul>
+
+        <script>
+          const ulTag = document.querySelector("#list"); 
+
+          function handleClick(){
+            const xhr = new XMLHttpRequest(); 
+            xhr.open("GET", "http://localhost:4000/courses"); 
+            xhr.send(); 
+
+            xhr.onload = function(){
+              ulTag.innerHTML = "";
+              const result = xhr.responseText; 
+              const courses = JSON.parse(result); 
+
+              for(let course of courses) {
+                const liTag = document.createElement('li');  
+                liTag.textContent = course.title;   
+                ulTag.appendChild(liTag); 
+              }
+            }
+
+            xhr.onerror = function(){
+              console.log("Error fetching courses");
+            }
+          }
+        </script>
+      </body>
+    </html>
+  `);
+});
+
+
 /**
  * POST /courses
  * Create a new course
