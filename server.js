@@ -91,6 +91,7 @@ class Course {
  * Retrieve all courses
  */
 app.get("/courses", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
   return res.status(200).json(courses);
 });
 
