@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Search</title>
+    </head>
+
+    <body>
+        <h1>Search page</h1>
+        <form onsubmit="handleSubmit(event)">
+            <label> Enter the Course Title</label>
+            <input type="text" id="course-title" />
+            <input type="submit" />
+        </form>
+
+        <script>
+            function handleSubmit(event) {
+                event.preventDefault();
+                const courseTitle =
+                    document.getElementById("course-title").value;
+                console.log("Course Title:", courseTitle);
+            }
+        </script>
+    </body>
+</html>
