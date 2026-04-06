@@ -1,55 +1,54 @@
 <!doctype html>
 <html>
+    <head>
+        <title>Search</title>
+    </head>
 
-<head>
-  <title>Search</title>
-</head>
+    <body>
+        <h1>Search page</h1>
+        <form onsubmit="handleSubmit(event)">
+            <label> Enter the Course Title</label>
+            <input type="text" id="course-title" />
+            <input type="submit" />
+        </form>
 
-<body>
-  <h1>Search page</h1>
-  <form onsubmit="handleSubmit(event)">
-    <label> Enter the Course Title</label>
-    <input type="text" id="course-title" />
-    <input type="submit" />
-  </form>
+        <!-- Display Search Results -->
+        <h2>Search Results - <span id="courses-count">0</span></h2>
+        <ul id="courses-list"></ul>
 
-  <!-- Display Search Results -->
-  <h2>Search Results - <span id = "courses-count">0</span></h2>
-  <ul id="courses-list"></ul>
+        <script>
+            const searchResults = document.getElementById("courses-list");
 
-  <script>
-    const searchResults = document.getElementById("courses-list");
+            function handleSubmit(event) {
+                event.preventDefault();
+                const courseTitle =
+                    document.getElementById("course-title").value;
+                // console.log("Course Title:", courseTitle);
+                const url =
+                    "http://localhost:4000/courses/search?title=" + courseTitle;
 
-    function handleSubmit(event) {
-      event.preventDefault();
-      const courseTitle =
-        document.getElementById("course-title").value;
-      // console.log("Course Title:", courseTitle);
-      const url =
-        "http://localhost:4000/courses/search?title=" + courseTitle;
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", url);
+                xhr.onload = function () {
+                    const result = JSON.parse(xhr.responseText);
+                    console.log("Search Result:", result);
 
-      const xhr = new XMLHttpRequest();
-      xhr.open("GET", url);
-      xhr.onload = function () {
-        const result = JSON.parse(xhr.responseText);
-        console.log("Search Result:", result);
+                    // Handle Search Results and Display in the UI
+                    searchResults.innerHTML = "";
+                    for (let course of result) {
+                        const liTag = document.createElement("li");
+                        liTag.textContent = course.title;
+                        searchResults.appendChild(liTag);
+                    }
 
-        // Handle Search Results and Display in the UI
-        searchResults.innerHTML = "";
-        for (let course of result) {
-          const liTag = document.createElement("li");
-          liTag.textContent = course.title;
-          searchResults.appendChild(liTag);
-        }
+                    // update the count of search results
+                    const countHandle =
+                        document.getElementById("courses-count");
+                    countHandle.textContent = result.length;
+                };
 
-        // update the count of search results        
-        const countHandle = document.getElementById("courses-count");
-        countHandle.textContent = result.length;
-      };
-      
-      xhr.send();
-    }
-  </script>
-</body>
-
+                xhr.send();
+            }
+        </script>
+    </body>
 </html>
