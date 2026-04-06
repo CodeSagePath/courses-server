@@ -1,13 +1,16 @@
+// Simple Express server for managing courses with CORS enabled
 const express = require("express");
 const app = express();
 
+// Importing CORS middleware to handle Cross-Origin Resource Sharing
 const cors = require("cors");
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
 
-// Middleware/Library to automatically set "Access-Control-Allow-Origin" to wildcard "*".
+// Middleware to enable CORS (Cross-Origin Resource Sharing)
 app.use(cors());
+
 
 // Server configuration
 const PORT = 4000;

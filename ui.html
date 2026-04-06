@@ -4,13 +4,16 @@
         <title>Courses UI</title>
     </head>
     <body>
-        <h2>Listing Courses</h2>
+        <h2>Listing Courses - <span id = "count">0</span></h2>
         <button onclick="handleClick()">fetch courses</button>
         <ul id="list"></ul>
 
         <script>
             // const ulTag = document.getElementById('list'); 
             const ulTag = document.querySelector("#list"); 
+            
+            // Need to manage this everywhere in Vanilla JS
+            const countHandle = document.querySelector("#count");
 
             function handleClick(){
                 const xhr = new XMLHttpRequest(); 
@@ -22,6 +25,9 @@
                    
                     const result = xhr.responseText; 
                     const courses = JSON.parse(result); 
+                    
+                    countHandle.textContent = courses.length;
+                    
                     for(let course of courses) {
                         const liTag = document.createElement('li');  
                         liTag.textContent = course.title;   
