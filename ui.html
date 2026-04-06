@@ -17,24 +17,34 @@
 
             function handleClick() {
                 const xhr = new XMLHttpRequest();
-                xhr.open("GET", "http://localhost:4000/courses");
-                xhr.send();
-                // success response
-                xhr.onload = function () {
-                    ulTag.innerHTML = "";
 
+                // Initialize a GET request to fetch the list of courses from the server
+                xhr.open("GET", "http://localhost:4000/courses");
+
+                // Send the request to the server -- this will trigger the onload or onerror callback based on the response
+                xhr.send();
+
+                // Success response
+                xhr.onload = function () {
+                    ulTag.innerHTML = ""; // clear the list before adding new courses
+
+                    // Parse the response from the server and extract the list of courses
                     const result = xhr.responseText;
+                    // console.log("Result:", result);
                     const courses = JSON.parse(result);
 
+                    // Update the count of courses
                     countHandle.textContent = courses.length;
 
+                    // Display courses in the UI
                     for (let course of courses) {
                         const liTag = document.createElement("li");
                         liTag.textContent = course.title;
                         ulTag.appendChild(liTag);
                     }
                 };
-                // error response
+
+                // Error response
                 xhr.onerror = function () {};
             }
         </script>

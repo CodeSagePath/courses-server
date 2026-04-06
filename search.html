@@ -6,6 +6,8 @@
 
     <body>
         <h1>Search page</h1>
+
+        <!-- Form for searching courses based on title -->
         <form onsubmit="handleSubmit(event)">
             <label> Enter the Course Title</label>
             <input type="text" id="course-title" />
@@ -17,37 +19,53 @@
         <ul id="courses-list"></ul>
 
         <script>
+            // Get the element to display search results
             const searchResults = document.getElementById("courses-list");
 
+            // Handle form submission for searching courses
             function handleSubmit(event) {
+
+                // Prevent the default form submission behavior - this will prevent the page from reloading when the form is submitted
                 event.preventDefault();
+
+                // Get the course title from the input field
                 const courseTitle =
                     document.getElementById("course-title").value;
                 // console.log("Course Title:", courseTitle);
+
+                // Construct the URL for searching courses based on the title
                 const url =
                     "http://localhost:4000/courses/search?title=" + courseTitle;
 
+                // Make an AJAX request to search for courses based on the title
                 const xhr = new XMLHttpRequest();
+
+                // Initialize a GET request to search for courses based on the title
                 xhr.open("GET", url);
+
+                // Send the request to the server -- this will trigger the onload or onerror callback based on the response
+                xhr.send();
+
+                // Handle the response from the server
                 xhr.onload = function () {
                     const result = JSON.parse(xhr.responseText);
                     console.log("Search Result:", result);
 
                     // Handle Search Results and Display in the UI
                     searchResults.innerHTML = "";
+
+                    // Display the search results in the UI
                     for (let course of result) {
                         const liTag = document.createElement("li");
                         liTag.textContent = course.title;
                         searchResults.appendChild(liTag);
                     }
 
-                    // update the count of search results
+                    // Update the count of search results
                     const countHandle =
                         document.getElementById("courses-count");
                     countHandle.textContent = result.length;
                 };
-
-                xhr.send();
             }
         </script>
     </body>
