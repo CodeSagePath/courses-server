@@ -11,7 +11,6 @@ app.use(express.json());
 // Middleware to enable CORS (Cross-Origin Resource Sharing)
 app.use(cors());
 
-
 // Server configuration
 const PORT = 4000;
 const HOSTNAME = "127.0.0.1";
@@ -126,13 +125,13 @@ app.get("/ui", (req, res) => {
 
             xhr.onload = function(){
               ulTag.innerHTML = "";
-              const result = xhr.responseText; 
-              const courses = JSON.parse(result); 
+              const result = xhr.responseText;
+              const courses = JSON.parse(result);
 
               for(let course of courses) {
-                const liTag = document.createElement('li');  
-                liTag.textContent = course.title;   
-                ulTag.appendChild(liTag); 
+                const liTag = document.createElement('li');
+                liTag.textContent = course.title;
+                ulTag.appendChild(liTag);
               }
             }
 

@@ -3,11 +3,13 @@
     <head>
         <title>Courses UI</title>
     </head>
+
     <body>
         <h2>Listing Courses - <span id="count">0</span></h2>
         <button onclick="handleClick()">fetch courses</button>
         <ul id="list"></ul>
 
+        <script src="https://unpkg.com/axios@1.13.2/dist/axios.min.js"></script>
         <script>
             // const ulTag = document.getElementById('list');
             const ulTag = document.querySelector("#list");
@@ -15,38 +17,77 @@
             // Need to manage this everywhere in Vanilla JS
             const countHandle = document.querySelector("#count");
 
+            //// Using "Fetch API" to fetch courses from the server and update the UI accordingly
+
             function handleClick() {
-                const xhr = new XMLHttpRequest();
+                axios
+                    .get("https://jsonplaceholder.typicode.com/users")
+                    .then((response) => {
+                        console.log("Response:", response);
+                        console.log(response.data); // Extract the data from the response
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching courses:", error);
+                    });
+            }
 
-                // Initialize a GET request to fetch the list of courses from the server
-                xhr.open("GET", "http://localhost:4000/courses");
+            /*
+        function handleClick() {
+            fetch("http://localhost:4000/courses")
+                .then((response) => response.json()) // Parse the JSON response from the server
+                .then((courses) => {
+                    ulTag.innerHTML = ""; // Clear the list before adding new courses
+                    countHandle.textContent = courses.length; // Update the count of courses
 
-                // Send the request to the server -- this will trigger the onload or onerror callback based on the response
-                xhr.send();
-
-                // Success response
-                xhr.onload = function () {
-                    ulTag.innerHTML = ""; // clear the list before adding new courses
-
-                    // Parse the response from the server and extract the list of courses
-                    const result = xhr.responseText;
-                    // console.log("Result:", result);
-                    const courses = JSON.parse(result);
-
-                    // Update the count of courses
-                    countHandle.textContent = courses.length;
-
-                    // Display courses in the UI
                     for (let course of courses) {
                         const liTag = document.createElement("li");
                         liTag.textContent = course.title;
                         ulTag.appendChild(liTag);
                     }
-                };
+                })
+                .catch((error) => {
+                    console.error("Error fetching courses:", error);
+                });
+        }
+        */
 
-                // Error response
-                xhr.onerror = function () {};
-            }
+            //// Using XMLHttpRequest to fetch courses from the server and update the UI accordingly -- NOT USING THIS NOW
+
+            /*
+
+        function handleClick() {
+            const xhr = new XMLHttpRequest();
+
+            // Initialize a GET request to fetch the list of courses from the server
+            xhr.open("GET", "http://localhost:4000/courses");
+
+            // Send the request to the server -- this will trigger the onload or onerror callback based on the response
+            xhr.send();
+
+            // Success response
+            xhr.onload = function () {
+                ulTag.innerHTML = ""; // clear the list before adding new courses
+
+                // Parse the response from the server and extract the list of courses
+                const result = xhr.responseText;
+                // console.log("Result:", result);
+                const courses = JSON.parse(result);
+
+                // Update the count of courses
+                countHandle.textContent = courses.length;
+
+                // Display courses in the UI
+                for (let course of courses) {
+                    const liTag = document.createElement("li");
+                    liTag.textContent = course.title;
+                    ulTag.appendChild(liTag);
+                }
+            };
+
+            // Error response
+            xhr.onerror = function () {};
+        }
+        */
         </script>
     </body>
 </html>
