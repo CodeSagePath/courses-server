@@ -2,6 +2,9 @@
 const express = require("express");
 const app = express();
 
+// Importing Mongoose for MongoDB interactions (not used in this example but set up for future use)
+const mongoose = require("mongoose");
+
 // Importing CORS middleware to handle Cross-Origin Resource Sharing
 const cors = require("cors");
 
@@ -51,6 +54,17 @@ const courses = [
     instructor: "Kiran",
   },
 ];
+
+// Define a schema - design / blueprint (object structure)
+const courseSchema = new mongoose.Schema({
+  title: String,
+  category: String,
+  instructor: String,
+});
+
+// Create a model - collection (table) in the database
+const CourseModel = mongoose.model("Course", courseSchema);
+
 
 /**
  * Course Model (ES6 Class)
